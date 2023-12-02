@@ -85,7 +85,9 @@ def simann(probl, mcmc_steps=10,
 
     probl.init_config()
     c = probl.cost()
-    print(f"initial cost = {c}")
+    
+    if verbose:
+        print(f"initial cost = {c}")
 
     # Keep the best cost seen so far, and its associated configuration.
     best = probl.copy()
@@ -108,7 +110,7 @@ def simann(probl, mcmc_steps=10,
                 accepted += 1
                 if c <= best_c:
                     best_c = c
-                    best = probl.copy()
+                    
                     
         if verbose:
             print(
@@ -122,17 +124,18 @@ def simann(probl, mcmc_steps=10,
 
         if mc_hook is not None:
             hret = mc_hook(best_c)
-            print(hret)
             if hret == False:
                 break
 
         epoch += 1
 
-    hist_df = pd.DataFrame(data=hist_arr, columns=hist_columns)
+    #hist_df = pd.DataFrame(data=hist_arr, columns=hist_columns)
 
     #Add epoch column
-    hist_df.insert(0, 'epoch', range(0, 0 + len(hist_df)))
-    hist_df.set_index("epoch", inplace=True, drop=True, verify_integrity=True)
+    #hist_df.insert(0, 'epoch', range(0, 0 + len(hist_df)))
+    #hist_df.set_index("epoch", inplace=True, drop=True, verify_integrity=True)
     # Return the best instance
-    print(f"final cost = {best_c}")
-    return best, hist_df
+    if verbose: 
+        print(f"final cost = {best_c}")
+        
+    return epoch, hist_arr
